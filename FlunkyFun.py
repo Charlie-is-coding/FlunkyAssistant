@@ -33,9 +33,6 @@ player = [
 """
 
 
-players = []
-
-
 def add_player(ID, name):
 
     with open("players.json", "r", encoding="UTF-8") as file:
@@ -64,6 +61,9 @@ def add_player(ID, name):
         with open("players.json", "a", encoding="UTF-8") as file:
             file.write(json.dumps(player))
             file.write("\n")
+
+            
+players = []
 
 
 def load_player(ID=1):
