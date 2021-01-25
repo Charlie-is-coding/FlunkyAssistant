@@ -9,21 +9,22 @@ import pprint
 import copy
 
 """
-player = [
-    {"ID": "000000001"},
-    {"Name": "Name"},
-    {"Games played": 0},
-    {"Game won": 0},
-    {"Games lost": 0},
-    {"Average hits per game": 0},
-    {"Hat tricks": 0},
-    {"Penalties given": 0},
-    {"Penalties taken": 0},
-    {"Rewinds": 0},
-    {"'I was so thirsty' achievement": 0},
-    {"Bottle behind enemy lines": 0}
-    ]
+player = {
+    "ID": "000000001",
+    "Name": "Name",
+    "Games played": 0,
+    "Game won": 0,
+    "Games lost": 0,
+    "Average hits per game": 0,
+    "Hat tricks": 0,
+    "Penalties given": 0,
+    "Penalties taken": 0,
+    "Rewinds": 0,
+    "'I was so thirsty' achievement": 0,
+    "Bottle behind enemy lines": 0
+    }
 """
+
 
 """Creating "players.json" file."""
 
@@ -33,37 +34,50 @@ player = [
 """
 
 
+players = []
+
+
 def add_player(ID, name):
 
     with open("players.json", "r", encoding="UTF-8") as file:
 
         for lines in file:
             player = json.loads(lines)
-            if player[0]["ID"] == ID:
+            if player["ID"] == ID:
                 print("Player with ID:", ID, "already registered")
                 return
 
-        player = [
-            {"ID": ID},
-            {"Name": name},
-            {"Games played": 0},
-            {"Game won": 0},
-            {"Games lost": 0},
-            {"Average hits per game": 0},
-            {"Hat tricks": 0},
-            {"Penalties given": 0},
-            {"Penalties taken": 0},
-            {"Rewinds": 0},
-            {"'I was so thirsty' achievement": 0},
-            {"Bottle behind enemy lines": 0}
-        ]
+        player = {
+            "ID": ID,
+            "Name": name,
+            "Games played": 0,
+            "Games won": 0,
+            "Games lost": 0,
+            "Average hits per game": 0,
+            "Hat tricks": 0,
+            "Penalties given": 0,
+            "Penalties taken": 0,
+            "Rewinds": 0,
+            "'I was so thirsty' achievement": 0,
+            "Bottle behind enemy lines": 0
+        }
 
         with open("players.json", "a", encoding="UTF-8") as file:
             file.write(json.dumps(player))
             file.write("\n")
 
-            
-players = []
+
+def auto_add_player():
+
+    add_player("000000001", "Lyubitshka")
+    add_player("000000002", "Miauga")
+    add_player("000000002", "Miauga")
+    add_player("000000003", "bJusta")
+    add_player("000000004", "Aris")
+    add_player("000000005", "Gzb")
+    add_player("000000006", "Ola")
+    add_player("000000007", "Kuba")
+    add_player("000000420", "Charlie")
 
 
 def load_player(ID=1):
@@ -72,16 +86,17 @@ def load_player(ID=1):
             player = json.loads(lines)
 
             for i in range(len(players)):
-                if player[0]["ID"] == players[i][0]["ID"]:
-                    print("Player already in game")
+                if player["ID"] == players[i]["ID"]:
+                    #print("Player already in game")
                     break
             else:
-                if player[0]["ID"] == ID:
-                    print("Player found")
+                if player["ID"] == ID:
+                    print("Player with ID:", player["ID"], "found.")
+                    print("Adding player:", player["Name"])
                     players.append(player)
 
                 else:
-                    print("Player not found")
+                    #print("Player not found")
                     break
 
 
@@ -98,90 +113,73 @@ def list_players():
     print(players)
 
 
-team1 = set()
-team2 = set()
+"""team = {
+    "ID": 0,
+    "players" = list(),
+    "allEmpty" = False,
+    "teamHits" = 0,
+    "teamHatTricks = 0,
+    } 
+"""
+
+teams = []
 
 
-def make_teams():
+def make_teams(howMany):
+    for i in range(howMany):
+        team = {
+            "ID": i,
+            "players": list(),
+            "allEmpty": False,
+            "teamHits": 0,
+            "teamHatTricks": 0,
+        }
 
-    global team1
-    global team2
-    team1 = list()
-    team2 = list()
+        teams.append(team)
+
+
+def random_teams():
 
     temp_players_list = copy.deepcopy(players)
 
     print("Choosing from players:")
+
     for i in range(len(temp_players_list)):
-        print(temp_players_list[i][1])
+        print(temp_players_list[i]["Name"])
 
     while temp_players_list != list():
 
-        pick_player = random.sample(temp_players_list, 1)
-        print("Random player:", pick_player[0][1]["Name"], "goes to team1")
+        for i in range(len(teams)):
 
-        team1.append(pick_player)
-        temp_players_list.remove(pick_player[0])
+            pick_player = random.sample(temp_players_list, 1)
+            print("Random player:",
+                  pick_player[0]["Name"], "goes to team", i+1)
+            # print(teams)
+            teams[i]["players"].append(pick_player)
+            temp_players_list.remove(pick_player[0])
 
         if temp_players_list == list():
+            print("\n")
             break
-        pick_player = random.sample(temp_players_list, 1)
-        print("Random player", pick_player[0][1]["Name"], "goes to team2")
 
-        team2.append(pick_player)
-        temp_players_list.remove(pick_player[0])
+    for i in range(len(teams)):
+        print("Team", int(teams[i]["ID"])+1, "players:")
+        for j in range(len(teams[i]["players"])):
+            print(teams[i]["players"][j][0]["Name"])
+        print("\n")
 
-        # print(temp_players_list)
-
-    print("Team 1:")
-    for i in range(len(team1)):
-        print(team1[i][0][1]["Name"])
     print("\n")
-
-    print("Team 2:")
-    for i in range(len(team2)):
-        print(team2[i][0][1]["Name"])
-
-
-def change_order(team, number=1):
-
-    team_copy = copy.deepcopy(team)
-    team_temp = list()
-
-    print("Change order of team.", number)
-    print("Players availble:", len(team), "from:")
-    for i in range(len(team)):
-        print(team[i][0])
-
-    i = 0
-    team_players = len(team)
-
-    while i < team_players:
-        print(i)
-        print("Give", (i+1), "player name:")
-        player = input("Set player:")
-
-        for j in range(len(team)):
-
-            if player in team[j][0][1]["Name"]:
-                print("Player found")
-                team_temp.append(team[j])
-                team_copy.remove(team[j])
-                i += 1
-
-            else:
-                print("Wrong name")
-    # does not work!
-    team = team_temp
-    return team
 
 
 game = {
     "ID": 0,
-    "Players": list(),
+    "Teams": teams,
     "Rounds": [0, ],
     "Turns": [0, ],
 }
+
+
+"""under dev"""
 
 
 def play(game):
@@ -216,6 +214,7 @@ def play(game):
             print("Turn:", game_turn)
 
             hit = input("Hit?  ( y / n )")
+
             if hit == "y":
                 print("Congrats")
                 bottle_empty = input("Player bottle empty?")
@@ -255,5 +254,11 @@ print("Welcome to the Flunky_Fun game")
 
 
 def auto():
+    print("\n", "Processing auto_load - loading players to the programm", "\n")
     auto_load()
-    make_teams()
+    print("\n", "Auto making teams (2)", "\n")
+    make_teams(2)
+    print("\n", "Auto picking players to teams", "\n")
+    random_teams()
+
+    pprint.pprint(teams)
