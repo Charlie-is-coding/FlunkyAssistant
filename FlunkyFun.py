@@ -81,33 +81,44 @@ def auto_add_player():
 
 
 def load_player(ID=1):
+
+    for i in range(len(players)):
+        if players[i]["ID"] == ID:
+            print("Player already in game")
+            return
+
+    #print(ID)
+
+    appended = False
+    
     with open("players.json", "r", encoding="UTF-8") as file:
         for lines in file:
             player = json.loads(lines)
+            if player["ID"] == ID:               
+               print("Player with ID:", player["ID"], "found.")
+               print("Adding player:", player["Name"])
+               players.append(player)
+               appended = True
 
-            for i in range(len(players)):
-                if player["ID"] == players[i]["ID"]:
-                    #print("Player already in game")
-                    break
-            else:
-                if player["ID"] == ID:
-                    print("Player with ID:", player["ID"], "found.")
-                    print("Adding player:", player["Name"])
-                    players.append(player)
-
-                else:
-                    #print("Player not found")
-                    break
-
+    if appended:
+        print("Player with ID:", ID, "added to the game.")
+        print("\n")
+    else:
+        print("Player with ID:", ID, "not found.")
+        print("\n")
+                
 
 def auto_load():
     load_player("000000001")
+    load_player("000000100")
     load_player("000000002")
     load_player("000000003")
     load_player("000000004")
     load_player("000000005")
     load_player("000000006")
-
+    load_player("000000006")
+    load_player("000000006")
+    load_player("000000420")
 
 def list_players():
     print(players)
@@ -136,6 +147,7 @@ def make_teams(howMany):
         }
 
         teams.append(team)
+    print("Teams made", len(teams))
 
 
 def random_teams():
@@ -147,20 +159,20 @@ def random_teams():
     for i in range(len(temp_players_list)):
         print(temp_players_list[i]["Name"])
 
+    print("\n")
     while temp_players_list != list():
 
         for i in range(len(teams)):
 
             pick_player = random.sample(temp_players_list, 1)
-            print("Random player:",
-                  pick_player[0]["Name"], "goes to team", i+1)
+            print("Random player:", pick_player[0]["Name"], "goes to team", i+1)
             # print(teams)
             teams[i]["players"].append(pick_player)
             temp_players_list.remove(pick_player[0])
 
-        if temp_players_list == list():
-            print("\n")
-            break
+            if temp_players_list == list():
+                print("\n")
+                break
 
     for i in range(len(teams)):
         print("Team", int(teams[i]["ID"])+1, "players:")
@@ -169,6 +181,7 @@ def random_teams():
         print("\n")
 
     print("\n")
+
 
 
 game = {
@@ -262,3 +275,5 @@ def auto():
     random_teams()
 
     pprint.pprint(teams)
+
+auto()
