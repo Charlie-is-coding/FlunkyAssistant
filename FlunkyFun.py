@@ -34,7 +34,7 @@ player = {
 """
 
 
-players = []
+
 
 
 def add_player(ID, name):
@@ -80,16 +80,20 @@ def auto_add_player():
     add_player("000000420", "Charlie")
 
 
+players = []
+
+
 def load_player(ID=1):
 
     for i in range(len(players)):
         if players[i]["ID"] == ID:
             print("Player already in game")
+            print("\n")
             return
 
-    #print(ID)
 
     appended = False
+
     
     with open("players.json", "r", encoding="UTF-8") as file:
         for lines in file:
@@ -120,6 +124,7 @@ def auto_load():
     load_player("000000006")
     load_player("000000420")
 
+
 def list_players():
     print(players)
 
@@ -127,7 +132,7 @@ def list_players():
 """team = {
     "ID": 0,
     "players" = list(),
-    "allEmpty" = False,
+    "allEmpty" = 0,
     "teamHits" = 0,
     "teamHatTricks = 0,
     } 
@@ -141,7 +146,7 @@ def make_teams(howMany):
         team = {
             "ID": i,
             "players": list(),
-            "allEmpty": False,
+            "allEmpty": 0,
             "teamHits": 0,
             "teamHatTricks": 0,
         }
@@ -166,7 +171,6 @@ def random_teams():
 
             pick_player = random.sample(temp_players_list, 1)
             print("Random player:", pick_player[0]["Name"], "goes to team", i+1)
-            # print(teams)
             teams[i]["players"].append(pick_player)
             temp_players_list.remove(pick_player[0])
 
@@ -199,68 +203,122 @@ def play(game):
 
     print("Let's play flunky!")
     print("Match between:")
-    print("Team 1:", team1)
-    print("and")
-    print("Team 2:", team2)
-    print("BEGIN!")
+    
+    for i in range(len(teams)):
+        print("Team name:", "default")
+        print("Team number:", int(teams[i]["ID"])+1,)
+        teams[i]["allEmpty"] = len(teams[i]["players"])
+        print("Bottles to empty:", teams[i]["allEmpty"])
+        print("Team hits:", teams[i]["teamHits"])
+        print("Team hat tricks", teams[i]["teamHatTricks"])
+        print("Players:")
+        for j in range(len(teams[i]["players"])):
+            print(teams[i]["players"][j][0]["Name"])
+        print("\n")
 
-    game["Players"].append(team1)
-    game["Players"].append(team2)
 
-    print("Game info:", game)
+    #print("Game info:", game)
 
-    empty = 1
-    all_empty1 = len(team1)
-    all_empty2 = len(team2)
-    game_turn = 1
-    game_round = 1
+    gameRound = 0
+    gameTurn = 0
+    
+    while (teams[0]["allEmpty"] != 0) or (teams[1]["allEmpty"] != 0):
+        
 
-    while all_empty1 or allempty2 != 0:
+        gameRound += 1
 
-        game["Rounds"].append(game_round)
-        print("Round", game["Rounds"][-1])
+        game["Rounds"].append(gameRound)
+        print("Round:", game["Rounds"][-1])
+        #print("Turn:", gameTurn)
+        game["Turns"] = 0
 
-        while empty != 0:
+        a = len(teams[0]["players"])
+        b = len(teams[1]["players"])
+        c = 0
+        
+        if a > b:
+            c = a
+        else:
+            c = b
+        
+        for j in range(c):
+            #print(j)
+            for i in range(len(teams)):
+                
+                try:
+                    teams[i]["players"][j][0]["Name"] !=0
+                    gameTurn += 1
+                    print("Game turn", gameTurn)
+                    print("Now playing team:", i + 1)
+                    print("Player turn:",teams[i]["players"][j][0]["Name"] )
+                   
+                    hit = input("Hit?  ( y / n )")
 
-            game["Turns"].append(game_turn)
+                    if hit == "y":
+                        print("Congrats")
+                        bottle_empty = input("Player bottle empty?")
+                        if bottle_empty == "y":
+                            teams[i]["allEmpty"] -= 1
+                            print(teams[i]["allEmpty"])
+                            if teams[i]["allEmpty"] == 0:
+                                print("All empty!!!")
+                                break
+                                           
+                        elif bottle_empty == "n":
+                            print("Ok, bottle not empty yet. Drink faster!")
+                
+                    elif hit == "n":
+                        print("Too bad...")
 
-            print("Turn:", game_turn)
+                    penalty = input("Was a penalty? ( y / n )")
 
-            hit = input("Hit?  ( y / n )")
+                    if penalty == "n":
+                        print("Ok, no penalty.")
 
-            if hit == "y":
-                print("Congrats")
-                bottle_empty = input("Player bottle empty?")
-                if bottle_empty == "y":
-                    all_empty1 -= 1
+                    elif penalty == "y":
+                        while penalty == "y":
+                
 
-            if hit == "n":
-                print("Too bad...")
+                            penalty_player = input("Type penalty player name: ")
 
-            penalty = input("Was a penalty? ( y / n )")
+                            for i in range(len(players)):
+                                if penalty_player == players[i]["Name"]:
+                                    print("found")
+                                    print("Player", penalty_player, "will receive penalty")
+                                    players[i]["Penalties taken"] += 1
+                                    print(players[i]["Penalties taken"])
+                                    penalty = input("Someone else got a penalty? ( y / n )")
+                                    break
 
-            while penalty == "y":
-                # give_penalty()
-                penalty_player = input("Type penalty player name?")
-                if penalty_player in players:
-                    print("Player", penalty_player, "will receive penalty")
+                                else:
+                                    print("Player not found")
 
-                else:
-                    print("Player not found")
+                    proceed = input("Ok to proceed? (y/n)")
 
-            if penalty == "n":
-                print("Ok, no penalty. Clean shot...")
+                    if proceed == "y":
+                        pass
+                    if proceed == "n":
+                        print("Come on, what the heck?. (Proceed anyway)")
+                        pass
 
-            proceed = input("Ok to proceed? (y/n)")
 
-            if proceed == "y":
-                turn += 1
-            if proceed == "n":
-                print("Come on, what the heck?. (Proceed anyway)")
-                turn += 1
+                except IndexError:
+                    break
+        
+                 
+
+
+            
+        proceed = input("Ok to proceed? (y/n)")
+
+        if proceed == "y":
+            gameTurn += 1
+        if proceed == "n":
+            print("Come on, what the heck?. (Proceed anyway)")
+            gameTurn += 1
 
     print("Game over")
-    print("Turns:", game["Turns"][-1])
+    print("Turns:", game["Turns"])
 
 
 print("Welcome to the Flunky_Fun game")
@@ -275,5 +333,8 @@ def auto():
     random_teams()
 
     pprint.pprint(teams)
+    print("\n")
+    print("Auto starting game...", "\n")
+    play(game)
 
 auto()
