@@ -1,6 +1,9 @@
 # FlunkyAssistant
 Flunky game assistant. 
 
+Latest info:
+- new version available.
+
 This is a concept of an assistant for Flunky* - a real-life drinking game.
 
 Programm will be developed in Python 3 composed with JS for front-end data visualization (players stats, game stats, etc.) with a database to hold players and games info.
