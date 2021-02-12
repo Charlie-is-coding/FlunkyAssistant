@@ -36,6 +36,7 @@ player = {
 
 
 
+"""Adding new players to JSON file"""
 
 def add_player(ID, name):
 
@@ -145,6 +146,7 @@ def make_teams(howMany):
     for i in range(howMany):
         team = {
             "ID": i,
+            "name": "No name",
             "players": list(),
             "allEmpty": 0,
             "teamHits": 0,
@@ -154,6 +156,16 @@ def make_teams(howMany):
         teams.append(team)
     print("Teams made", len(teams))
 
+def change_team_name(teamID):
+
+    for i in range(len(teams)):
+        if teams[i]["ID"] == int(teamID):
+            print("Change name of team ", i + 1)
+            teams[i]["name"] = input("Type team name: ")
+            break
+    else:
+        return
+        
 
 def random_teams():
 
@@ -192,7 +204,7 @@ game = {
     "ID": 0,
     "Teams": teams,
     "Rounds": [0, ],
-    "Turns": [0, ],
+    "Turns": 0,
 }
 
 
@@ -205,7 +217,7 @@ def play(game):
     print("Match between:")
     
     for i in range(len(teams)):
-        print("Team name:", "default")
+        print("Team name:", teams[i]["name"])
         print("Team number:", int(teams[i]["ID"])+1,)
         teams[i]["allEmpty"] = len(teams[i]["players"])
         print("Bottles to empty:", teams[i]["allEmpty"])
@@ -221,8 +233,9 @@ def play(game):
 
     gameRound = 0
     gameTurn = 0
+
     
-    while (teams[0]["allEmpty"] != 0) or (teams[1]["allEmpty"] != 0):
+    while int(teams[0]["allEmpty"]) > 0 and int(teams[1]["allEmpty"]) > 0:
         
 
         gameRound += 1
@@ -248,6 +261,7 @@ def play(game):
                 try:
                     teams[i]["players"][j][0]["Name"] !=0
                     gameTurn += 1
+                    game["Turns"] += 1
                     print("Game turn", gameTurn)
                     print("Now playing team:", i + 1)
                     print("Player turn:",teams[i]["players"][j][0]["Name"] )
@@ -259,10 +273,9 @@ def play(game):
                         bottle_empty = input("Player bottle empty?")
                         if bottle_empty == "y":
                             teams[i]["allEmpty"] -= 1
-                            print(teams[i]["allEmpty"])
+                            print("Bottles left to empty:", teams[i]["allEmpty"])
                             if teams[i]["allEmpty"] == 0:
                                 print("All empty!!!")
-                                break
                                            
                         elif bottle_empty == "n":
                             print("Ok, bottle not empty yet. Drink faster!")
@@ -270,6 +283,7 @@ def play(game):
                     elif hit == "n":
                         print("Too bad...")
 
+                    
                     penalty = input("Was a penalty? ( y / n )")
 
                     if penalty == "n":
@@ -306,17 +320,6 @@ def play(game):
                     break
         
                  
-
-
-            
-        proceed = input("Ok to proceed? (y/n)")
-
-        if proceed == "y":
-            gameTurn += 1
-        if proceed == "n":
-            print("Come on, what the heck?. (Proceed anyway)")
-            gameTurn += 1
-
     print("Game over")
     print("Turns:", game["Turns"])
 
@@ -331,9 +334,12 @@ def auto():
     make_teams(2)
     print("\n", "Auto picking players to teams", "\n")
     random_teams()
+    change_team_name(0)
+    change_team_name(1)
 
     pprint.pprint(teams)
     print("\n")
+    print("Type 'play(game)' to test")
     print("Auto starting game...", "\n")
     play(game)
 
