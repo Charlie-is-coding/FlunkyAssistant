@@ -55,39 +55,24 @@ def auto():
     game.load_player_from_json_file("000000006")
     game.load_player_from_json_file("000000007")
     game.load_player_from_json_file("000000420")
+    game.load_player_from_json_file("000000008")
 
     print("Players added:", len(game.players))
 
     print("Players names:")
     for i in range(len(game.players)):
-        print(game.players[i].name)
+        print(game.players[i].name, "player id:", game.players[i].player_id)
 
     print("\n")
 
     print("Auto adding players to teams...")
 
-    game.teams[0].players.append(game.players[0])
-    game.teams[1].players.append(game.players[1])
-    game.teams[0].players.append(game.players[2])
-    game.teams[1].players.append(game.players[3])
-    game.teams[1].players.append(game.players[4])
-    game.teams[0].players.append(game.players[5])
-    game.teams[1].players.append(game.players[6])
-    game.teams[0].players.append(game.players[7])
+    game.make_random_teams()
 
     print("\n")
 
-    print("Showing teams info:")
-    print("\n")
-    for i in range(len(game.teams)):
-        print("Team id", i,":")
-        print("Team name:", game.teams[i].name)
-        print("Players:")
-        for j in range(len(game.teams[i].players)):
-            print(j+1, game.teams[i].players[j].name)
-        print("\n")
+    game.play()
     
-
     return game
 
 
@@ -104,6 +89,7 @@ auto()
 #database.register_new_player("000000006", "GZB")
 #database.register_new_player("000000420", "Charlie")
 #database.register_new_player("000000007", "Test user")
+#database.register_new_player("000000008", "Igor_2020Master")
 
 """Creating a new players.json file (handle with care!)"""
 

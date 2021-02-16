@@ -12,6 +12,9 @@ class Player:
     rewinds = 0
     i_was_so_thirsty = 0
     behind_enemy_lines = 0
+    game_empty = 1
+    game_penalites = 0
+    game_i_was_so_thisty = 0
 
 
     def __init__(self):
